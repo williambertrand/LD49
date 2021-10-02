@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
@@ -15,7 +16,6 @@ public class PlayerCombat : MonoBehaviour
 
     // Ref to ships rigidbody for use when shooting
     private Rigidbody2D rigidBody;
-    private PlayerMovement movement;
 
     private bool canAttack()
     {
@@ -23,6 +23,7 @@ public class PlayerCombat : MonoBehaviour
     }
 
 
+    private int fireDir;
     private float attackStartTime;
     private bool isAttacking;
     [SerializeField]  private float attackChargeThreshold;
@@ -32,13 +33,12 @@ public class PlayerCombat : MonoBehaviour
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
-        movement = GetComponent<PlayerMovement>();
 
         attackInputReference.action.performed += context =>
         {
             if(!isAttacking)
             {
-                StartAttack();
+                StartAttack(context);
             } else
             {
                 PerformAttack();
@@ -54,10 +54,27 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-
-    private void StartAttack()
+    private int DirFromKey(string keyName)
     {
-        //if (!canAttack() && !isAttacking) return;
+        switch (keyName)
+        {
+            case "upArrow":
+                return DIR.N;
+            case "downArrow":
+                return DIR.S;
+            case "rightArrow":
+                return DIR.E;
+            case "leftArrow":
+                return DIR.W;
+        }
+        return DIR.N;
+    }
+
+    private void StartAttack(InputAction.CallbackContext context)
+    {
+        if (!canAttack()) return;
+
+        fireDir = DirFromKey(context.control.name);
         isAttacking = true;
         attackStartTime = Time.time;
     }
@@ -67,7 +84,13 @@ public class PlayerCombat : MonoBehaviour
         float holdTime = Time.time - attackStartTime;
         if (holdTime < attackChargeThreshold)
         {
-            NormalAttack();
+            if (Player.Instance.stability.isUnstable)
+            {
+                StartCoroutine(UnstableAttack());
+            } else
+            {
+                NormalAttack();
+            }
         }
         else
         {
@@ -76,23 +99,23 @@ public class PlayerCombat : MonoBehaviour
         isAttacking = false;
     }
 
-    private Vector2 VelocityForDir(int dir)
+    private Vector2 VelocityForDir(int dir, float offset)
     {
         if (dir == DIR.N)
         {
-            return new Vector2(0, projectileSpeed);
+            return new Vector2(offset, projectileSpeed + offset);
         }
         else if (dir == DIR.E)
         {
-            return new Vector2(projectileSpeed, 0);
+            return new Vector2(projectileSpeed + offset, offset);
         }
         else if (dir == DIR.S)
         {
-            return new Vector2(0, -projectileSpeed);
+            return new Vector2(offset, -projectileSpeed + offset);
         }
         else if (dir == DIR.W)
         {
-            return new Vector2(-projectileSpeed, 0);
+            return new Vector2(-projectileSpeed + offset, offset);
         }
         else
         {
@@ -101,10 +124,10 @@ public class PlayerCombat : MonoBehaviour
     }
 
     private void NormalAttack() {
-        Quaternion projectileRot = DIR.rotationForDir(movement.currentDir);
+        Quaternion projectileRot = DIR.rotationForDir(fireDir);
         GameObject pro = Instantiate(projectile, attackPos.position, projectileRot);
-        Vector2 projectileVel = VelocityForDir(movement.currentDir);
-        pro.GetComponent<Rigidbody2D>().velocity = rigidBody.velocity + projectileVel;
+        Vector2 projectileVel = VelocityForDir(fireDir, 0);
+        pro.GetComponent<Rigidbody2D>().velocity = (rigidBody.velocity * 0.2f) + projectileVel;
         lastAttack = Time.time;
     }
 
@@ -114,5 +137,23 @@ public class PlayerCombat : MonoBehaviour
         //Vector2 projectileVel = transform.up * projectileSpeed * chargeFactor;
         //pro.GetComponent<Rigidbody2D>().velocity = rigidBody.velocity + projectileVel;
         lastAttack = Time.time;
+    }
+
+    IEnumerator UnstableAttack()
+    {
+        lastAttack = Time.time;
+        int randCount = Random.Range(2, 5);
+        for(int i = 0; i < randCount; i++)
+        {
+            int neg = Random.Range(0.0f, 1.0f) < 0.5f ? -1 : 1;
+            float randOffset = Random.Range(2.0f, 5.0f);
+            Quaternion projectileRot = DIR.rotationForDir(fireDir);
+            GameObject pro = Instantiate(projectile, attackPos.position, projectileRot);
+            Vector2 projectileVel = VelocityForDir(fireDir, randOffset * neg);
+            pro.GetComponent<Rigidbody2D>().velocity = (rigidBody.velocity * 0.2f) + projectileVel;
+
+            float randFireDelay = Random.Range(0.01f, 0.05f);
+            yield return new WaitForSeconds(randFireDelay);
+        }
     }
 }

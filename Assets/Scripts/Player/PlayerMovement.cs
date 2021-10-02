@@ -15,6 +15,11 @@ public static class DIR
         return Quaternion.Euler(0, 0, -90 * d);
     }
 
+    public static Quaternion rotationForDirWithOffset(int d, float offset)
+    {
+        return Quaternion.Euler(0, 0, (-90 * d + offset));
+    }
+
 }
 
 public class PlayerMovement : MonoBehaviour
