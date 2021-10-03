@@ -1,3 +1,4 @@
+#pragma target 2.0
 Shader "TextMeshPro/Distance Field (Surface)" {
 
 Properties {

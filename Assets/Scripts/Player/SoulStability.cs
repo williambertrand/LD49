@@ -31,9 +31,6 @@ public class SoulStability : MonoBehaviour
     void Update()
     {
 
-        if (!isActive) return;
-        current -= degenRate * Time.deltaTime;
-
         if(current < threshold)
         {
             isUnstable = true;
@@ -45,6 +42,9 @@ public class SoulStability : MonoBehaviour
             isUnstable = false;
         }
         UpdateUI();
+
+        if (!isActive) return;
+        current -= degenRate * Time.deltaTime;
     }
 
     public void Increase(float amount)
@@ -72,7 +72,7 @@ public class SoulStability : MonoBehaviour
     {
         for (int i = 0; i < damage; i++)
         {
-            GameObject drop = Instantiate(GamePrefabs.Instance.SoulDrop);
+            GameObject drop = Instantiate(GamePrefabs.Instance.PlayerSoulDrop);
             drop.transform.position = transform.position;
             drop.transform.localScale = new Vector3(0.5f, 0.5f, 1.0f);
 
@@ -90,7 +90,7 @@ public class SoulStability : MonoBehaviour
 
     public void Pause()
     {
-        isActive = false
+        isActive = false;
     }
 
     public void Resume()

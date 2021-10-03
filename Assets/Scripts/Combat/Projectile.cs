@@ -18,7 +18,7 @@ public class Projectile : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Player"))
         {
-            //Player.Instance.TakeDamage(damage);
+            Player.Instance.stability.TakeDamage(damage);
         }
         // TODO: Impact effect
         Destroy(gameObject);

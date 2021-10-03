@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
         }
     }
 
+    public PlayerInteraction interaction;
+
 
     // References to player behaviors
     public SoulStability stability;
@@ -22,12 +24,13 @@ public class Player : MonoBehaviour
     void Start()
     {
         stability = GetComponent<SoulStability>();
+        interaction = GetComponentInChildren<PlayerInteraction>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
 }

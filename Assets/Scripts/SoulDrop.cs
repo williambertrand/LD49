@@ -6,6 +6,7 @@ public class SoulDrop : MonoBehaviour
 {
     [SerializeField] float amount;
     [SerializeField] float duration;
+    [SerializeField] bool permanent;
     private Animator anim;
     private float spawnedAt;
 
@@ -22,6 +23,7 @@ public class SoulDrop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (permanent) return;
         if(Time.time - spawnedAt >= duration)
         {
             anim.SetTrigger("dissolve");

@@ -16,4 +16,6 @@ public class GamePrefabs : MonoBehaviour
     #endregion
 
     public GameObject SoulDrop;
+    public GameObject PlayerSoulDrop;
+    public GameObject Blobber;
 }

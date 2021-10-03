@@ -10,12 +10,17 @@ public class HasHealth : MonoBehaviour
     private float currentHealth;
 
     [SerializeField] int soulDrop;
+    [SerializeField] float deathDelay;
+    private bool isDead = false;
+
+    private Animator anim;
 
     // Start is called before the first frame update
     void Start()
     {
         currentHealth = maxHealth;
         enemyBehavior = GetComponent<Enemy>();
+        anim = GetComponent<Animator>();
     }
 
     public void TakeDamage(float dmg)
@@ -29,14 +34,28 @@ public class HasHealth : MonoBehaviour
 
         if(enemyBehavior != null)
         {
-            enemyBehavior.SetTarget(Player.Instance.transform);
+            enemyBehavior.OnAttackedBy(Player.Instance.transform);
         }
     }
 
     void OnDeath()
     {
+        isDead = true;
+        if(enemyBehavior != null)
+        {
+            EnemyManager.Instance.OnEnemyDeath(transform.position);
+        }
+        if(anim != null)
+        {
+            anim.SetTrigger("death");
+            StartCoroutine(DestroyAfter(deathDelay));
+        } else
+        {
+            Destroy(gameObject);
+        }
+
         DropSouls();
-        Destroy(gameObject);
+
     }
 
     void DropSouls()
@@ -54,5 +73,11 @@ public class HasHealth : MonoBehaviour
             );
             dropRB.velocity = randPopVel;
         }
+    }
+
+    IEnumerator DestroyAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Destroy(gameObject);
     }
 }

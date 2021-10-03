@@ -1,21 +1,13 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class Enemy : MonoBehaviour
+public class BasicEnemy : Enemy
 {
 
-    private enum STATE
-    {
-        IDLE,
-        PATROL,
-        CHASING,
-        ATTACKING,
-        DEAD
-    }
-
     private Transform target;
-    private STATE currentState;
+    private EnemyState currentState;
 
     private Rigidbody2D rigidBody;
 
@@ -34,11 +26,18 @@ public class Enemy : MonoBehaviour
     [SerializeField] private List<Transform> patrolLocs;
     private int currentPatrolLoc;
 
+    [Tooltip("Attacking behavior")]
+    [SerializeField] Transform eyeCenter;
+    [SerializeField] GameObject attackEye;
+
+    private Animator anim;
+
     // Start is called before the first frame update
     void Start()
     {
-        currentState = STATE.IDLE;
+        currentState = EnemyState.IDLE;
         rigidBody = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -47,46 +46,50 @@ public class Enemy : MonoBehaviour
         Vector3 desiredVelocity = Vector3.zero;
         switch (currentState)
         {
-            case STATE.IDLE:
-                if(patrolLocs != null)
+            case EnemyState.IDLE:
+                attackEye.SetActive(false);
+                if (patrolLocs != null)
                 {
                     target = patrolLocs[currentPatrolLoc];
                     currentPatrolLoc += 1;
-                    if(currentPatrolLoc >= patrolLocs.Count)
+                    if (currentPatrolLoc >= patrolLocs.Count)
                     {
                         currentPatrolLoc = 0;
                     }
-                    currentState = STATE.PATROL;
+                    currentState = EnemyState.PATROL;
                 }
                 break;
-            case STATE.PATROL:
+            case EnemyState.PATROL:
+                attackEye.SetActive(false);
                 if (target != null)
                 {
                     desiredVelocity = (target.position - transform.position).normalized * moveSpeed;
                 }
                 if (Vector2.Distance(target.position, transform.position) <= attackRange)
                 {
-                    currentState = STATE.IDLE;
+                    currentState = EnemyState.IDLE;
                 }
                 break;
-            case STATE.CHASING:
-                if(target != null)
+            case EnemyState.CHASING:
+                attackEye.SetActive(true);
+                if (target != null)
                 {
                     desiredVelocity = (target.position - transform.position).normalized * moveSpeed;
+                    UpdateAttackEye();
                 }
-                if(Vector2.Distance(target.position, transform.position) <= attackRange)
+                if (Vector2.Distance(target.position, transform.position) <= attackRange)
                 {
-                    currentState = STATE.ATTACKING;
+                    currentState = EnemyState.ATTACKING;
                 }
                 break;
-            case STATE.ATTACKING:
-                if(Time.time - lastAttack >= attackTime)
+            case EnemyState.ATTACKING:
+                if (Time.time - lastAttack >= attackTime)
                 {
                     Attack();
                 }
-                currentState = STATE.CHASING;
+                currentState = EnemyState.CHASING;
                 break;
-            case STATE.DEAD:
+            case EnemyState.DEAD:
                 break;
         }
 
@@ -105,23 +108,31 @@ public class Enemy : MonoBehaviour
         if (collision.gameObject.CompareTag(Tags.Player))
         {
             target = collision.gameObject.transform;
-            currentState = STATE.CHASING;
+            anim.SetTrigger("chasing");
+            currentState = EnemyState.CHASING;
         }
+    }
+
+    private void UpdateAttackEye()
+    {
+        Vector2 targetDist = (target.transform.position - eyeCenter.position).normalized;
+        Vector2 pos = targetDist * 0.15f;
+        attackEye.transform.localPosition = (Vector2)eyeCenter.localPosition + pos;
     }
 
 
     private void OnDrawGizmos()
     {
-        if(target != null)
+        if (target != null)
         {
             Gizmos.DrawSphere(target.position, 0.2f);
         }
         Handles.Label(transform.position + new Vector3(0, 1.0f, 0), currentState.ToString());
     }
 
-    public void SetTarget(Transform tar)
+    public override void OnAttackedBy(Transform tar)
     {
         target = tar;
-        currentState = STATE.CHASING;
+        currentState = EnemyState.CHASING;
     }
 }

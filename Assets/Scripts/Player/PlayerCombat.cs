@@ -22,7 +22,6 @@ public class PlayerCombat : MonoBehaviour
         return (Time.time - lastAttack >= AttackTime);
     }
 
-
     private int fireDir;
     private float attackStartTime;
     private bool isAttacking;
@@ -36,6 +35,10 @@ public class PlayerCombat : MonoBehaviour
 
         attackInputReference.action.performed += context =>
         {
+
+            // Don't shoot while talking
+            if (Player.Instance.interaction.isInDialouge) return;
+
             if(!isAttacking)
             {
                 StartAttack(context);
