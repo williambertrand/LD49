@@ -20,12 +20,16 @@ public class EnemyManager : MonoBehaviour
 
     public void OnEnemyDeath(Vector2 position)
     {
-        Debug.Log("Death, remaining: " + numEnemies);
         numEnemies -= 1;
-        if (numEnemies == 0)
+        if (numEnemies <= 0 && roomManager != null)
         {
             roomManager.OnRoomComplete(position);
         }
+    }
+
+    public void AddEnemy()
+    {
+        numEnemies += 1;
     }
 
 }

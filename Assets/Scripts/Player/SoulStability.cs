@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class SoulStability : MonoBehaviour
 {
     [SerializeField] private float max;
-    private float current;
+    public float current;
     [SerializeField] private float degenRate;
     [SerializeField] private float threshold;
 
@@ -15,16 +15,35 @@ public class SoulStability : MonoBehaviour
     public bool isUnstable;
     [SerializeField] private CameraShake virtualCamera;
 
-    private bool isActive;
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip onDamaged;
+    [SerializeField] private AudioClip pickup1;
+    [SerializeField] private AudioClip pickup2;
+
+    [SerializeField] private bool isActive;
 
     // Start is called before the first frame update
     void Start()
     {
-        current = max;
-        stabilityBar.maxValue = max;
-        stabilityBar.value = max;
-        isUnstable = false;
-        isActive = false;
+
+        if(CurrentGame.CurrentRoom > 0)
+        {
+            current = CurrentGame.Stability;
+        } else
+        {
+            current = max;
+        }
+
+        if(stabilityBar != null)
+        {
+            stabilityBar.maxValue = max;
+            stabilityBar.value = max;
+            isUnstable = false;
+            stabilityBar.minValue = 0;
+        }
+       
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -49,6 +68,14 @@ public class SoulStability : MonoBehaviour
 
     public void Increase(float amount)
     {
+        if(Random.Range(0,1) <= 0.5f)
+        {
+            audioSource.PlayOneShot(pickup1);
+        } else
+        {
+            audioSource.PlayOneShot(pickup1);
+        }
+        
         current += amount;
         if (current > max)
         {
@@ -58,13 +85,22 @@ public class SoulStability : MonoBehaviour
 
     void UpdateUI()
     {
-        stabilityBar.value = current;
+        if(stabilityBar != null)
+        {
+            stabilityBar.value = current;
+        }
     }
 
     public void TakeDamage(float damage)
     {
+        audioSource.PlayOneShot(onDamaged);
         current -= damage;
         DropSouls((int)damage);
+        if(current <= 0)
+        {
+            RoomManager.Instance.OnPlayerDeath();
+        }
+
         UpdateUI();
     }
 

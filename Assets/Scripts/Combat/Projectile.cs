@@ -9,6 +9,10 @@ public class Projectile : MonoBehaviour
 
     public float damage;
 
+    private void Start()
+    {
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
@@ -20,7 +24,9 @@ public class Projectile : MonoBehaviour
         {
             Player.Instance.stability.TakeDamage(damage);
         }
-        // TODO: Impact effect
+
+        //TODO: ObjectPooler.Instance.Spawn...
+        //audioSource.PlayOneShot(wallHit);
         Destroy(gameObject);
     }
 }

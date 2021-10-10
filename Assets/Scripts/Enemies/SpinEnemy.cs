@@ -31,6 +31,8 @@ public class SpinEnemy : Enemy
         currentState = EnemyState.IDLE;
         rigidBody = GetComponent<Rigidbody2D>();
         //anim = GetComponent<Animator>();
+
+        base.OnStart();
     }
 
     // Update is called once per frame
@@ -40,7 +42,7 @@ public class SpinEnemy : Enemy
         switch (currentState)
         {
             case EnemyState.IDLE:
-                if (patrolLocs != null)
+                if (patrolLocs != null && patrolLocs.Count > 0)
                 {
                     dest = patrolLocs[currentPatrolLoc];
                     currentPatrolLoc += 1;
@@ -55,10 +57,10 @@ public class SpinEnemy : Enemy
                 if (dest != null)
                 {
                     desiredVelocity = (dest.position - transform.position).normalized * moveSpeed;
-                }
-                if (Vector2.Distance(dest.position, transform.position) <= 0.5f)
-                {
-                    currentState = EnemyState.IDLE;
+                    if (Vector2.Distance(dest.position, transform.position) <= 0.5f)
+                    {
+                        currentState = EnemyState.IDLE;
+                    }
                 }
                 break;
             case EnemyState.DEAD:
@@ -67,7 +69,6 @@ public class SpinEnemy : Enemy
 
         rigidBody.velocity = Vector3.MoveTowards(rigidBody.velocity, desiredVelocity, acceleration * Time.deltaTime);
     }
-
 
 
     IEnumerator ShootAndSpin()

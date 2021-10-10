@@ -32,12 +32,18 @@ public class BasicEnemy : Enemy
 
     private Animator anim;
 
+    private float nextNoiseTime;
+    private AudioSource audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
         currentState = EnemyState.IDLE;
         rigidBody = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
+
+        base.OnStart();
     }
 
     // Update is called once per frame
@@ -99,6 +105,7 @@ public class BasicEnemy : Enemy
 
     private void Attack()
     {
+        audioSource.Play();
         Player.Instance.stability.TakeDamage(attackDamage);
         lastAttack = Time.time;
     }
@@ -121,18 +128,11 @@ public class BasicEnemy : Enemy
     }
 
 
-    private void OnDrawGizmos()
-    {
-        if (target != null)
-        {
-            Gizmos.DrawSphere(target.position, 0.2f);
-        }
-        Handles.Label(transform.position + new Vector3(0, 1.0f, 0), currentState.ToString());
-    }
-
     public override void OnAttackedBy(Transform tar)
     {
         target = tar;
         currentState = EnemyState.CHASING;
+        audioSource.Play();
+        
     }
 }

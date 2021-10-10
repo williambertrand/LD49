@@ -28,25 +28,38 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField]  private float attackChargeThreshold;
     [SerializeField] private float minChargeThreshold;
 
+    [SerializeField] private AudioClip onShoot;
+    private AudioSource audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
 
-        attackInputReference.action.performed += context =>
+        attackInputReference.action.performed += AttackPerformed;
+    }
+
+    private void AttackPerformed(InputAction.CallbackContext context)
+    {
+        // Don't shoot while talking
+        if (Player.Instance.interaction.isInDialouge) return;
+
+        if (!isAttacking)
         {
+            StartAttack(context);
+        }
+        else
+        {
+            PerformAttack();
+        }
+    }
 
-            // Don't shoot while talking
-            if (Player.Instance.interaction.isInDialouge) return;
 
-            if(!isAttacking)
-            {
-                StartAttack(context);
-            } else
-            {
-                PerformAttack();
-            }
-        };
+
+    private void OnDestroy()
+    {
+        attackInputReference.action.performed -= AttackPerformed;
     }
 
     private void Update()
@@ -127,6 +140,15 @@ public class PlayerCombat : MonoBehaviour
     }
 
     private void NormalAttack() {
+        if(attackPos == null)
+        {
+            Debug.Log("no attack pos?");
+            attackPos = transform;
+        }
+        if(audioSource !=null )
+        {
+            audioSource.PlayOneShot(onShoot);
+        }
         Quaternion projectileRot = DIR.rotationForDir(fireDir);
         GameObject pro = Instantiate(projectile, attackPos.position, projectileRot);
         Vector2 projectileVel = VelocityForDir(fireDir, 0);

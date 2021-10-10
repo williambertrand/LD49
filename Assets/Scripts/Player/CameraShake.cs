@@ -16,6 +16,7 @@ public class CameraShake : MonoBehaviour
     {
         virtualCam = GetComponent<CinemachineVirtualCamera>();
         noise = virtualCam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        virtualCam.Follow = Player.Instance.transform;
     }
 
     public void SetShake(bool enabled)

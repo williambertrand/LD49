@@ -6,7 +6,11 @@ using UnityEngine.SceneManagement;
 public enum RoomExitType
 {
     Scene,
-    Room
+    Room,
+    Blobber,
+    Restart,
+    Ending,
+    Credits
 }
 
 public class RoomExit: Interactable
@@ -17,14 +21,9 @@ public class RoomExit: Interactable
     {
         if(exitType == RoomExitType.Scene)
         {
-            // Load next scene
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
-        else if(exitType == RoomExitType.Room)
-        {
-            // Just re-load the current scene
-            CurrentGame.CurrentRoom += 1;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
+
+        RoomManager.Instance.LoadNextRoom(exitType);
     }
 }

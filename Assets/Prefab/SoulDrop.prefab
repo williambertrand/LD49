@@ -155,8 +155,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91498ea3e78f746adb9dd2f2c87239b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  amount: 2
-  duration: 5
+  amount: 4
+  duration: 6
+  permanent: 0
   ownerTag: 
 --- !u!114 &3580572270782692815
 MonoBehaviour:

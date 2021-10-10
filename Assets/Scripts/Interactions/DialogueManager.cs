@@ -18,9 +18,6 @@ public class DialogueManager : MonoBehaviour
     }
     #endregion
 
-
-    [SerializeField] private List<Character> characters;
-
     [SerializeField] private GameObject dialogueContainer;
     [SerializeField] private List<GameObject> uiToHide;
 
@@ -34,6 +31,8 @@ public class DialogueManager : MonoBehaviour
 
     private Queue<DialogueItem> items;
     private GameScript gameScript;
+
+    private string currentDialogue; // Ref to loadded dialouge
 
     // Start is called before the first frame update
     void Start()
@@ -61,9 +60,12 @@ public class DialogueManager : MonoBehaviour
         {
             g.SetActive(false);
         }
-
-        Player.Instance.stability.Pause();
+        if(Player.Instance.stability != null)
+        {
+            Player.Instance.stability.Pause();
+        }
         Player.Instance.interaction.isInDialouge = true;
+        currentDialogue = dialogueId;
 
     }
 
@@ -86,11 +88,20 @@ public class DialogueManager : MonoBehaviour
     public void EndDialogue()
     {
         dialogueContainer.SetActive(false);
+        if (currentDialogue == "ending")
+        {
+            // custom handling
+            RoomManager.Instance.LoadCredits();
+        }
+
         foreach (GameObject g in uiToHide)
         {
             g.SetActive(true);
         }
-        Player.Instance.stability.Resume();
+        if(Player.Instance.stability != null)
+        {
+            Player.Instance.stability.Resume();
+        }
         Player.Instance.interaction.isInDialouge = false;
     }
 

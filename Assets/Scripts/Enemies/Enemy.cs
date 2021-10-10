@@ -15,6 +15,11 @@ public enum EnemyState
 public class Enemy : MonoBehaviour
 {
 
+    protected void OnStart()
+    {
+        EnemyManager.Instance.AddEnemy();
+    }
+
     public virtual void OnAttackedBy(Transform tar)
     {
 

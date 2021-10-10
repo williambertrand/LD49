@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6323134971233804333}
   - component: {fileID: 6323134971233804331}
   - component: {fileID: 6323134971233804328}
+  - component: {fileID: 5426198922280824078}
   m_Layer: 0
   m_Name: Blobber
   m_TagString: Untagged
@@ -167,6 +168,18 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!114 &5426198922280824078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6323134971233804335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f1035e98b7a7422e9633fa1c168cf33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6323134971557882046
 GameObject:
   m_ObjectHideFlags: 0

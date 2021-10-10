@@ -13,6 +13,9 @@ public class HasHealth : MonoBehaviour
     [SerializeField] float deathDelay;
     private bool isDead = false;
 
+    [SerializeField] private AudioClip onDamage;
+    private AudioSource audioSource;
+
     private Animator anim;
 
     // Start is called before the first frame update
@@ -21,11 +24,16 @@ public class HasHealth : MonoBehaviour
         currentHealth = maxHealth;
         enemyBehavior = GetComponent<Enemy>();
         anim = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void TakeDamage(float dmg)
     {
         currentHealth -= dmg;
+        if(onDamage !=null)
+        {
+            audioSource.PlayOneShot(onDamage);
+        }
 
         if(currentHealth <= 0)
         {
@@ -41,11 +49,9 @@ public class HasHealth : MonoBehaviour
     void OnDeath()
     {
         isDead = true;
-        if(enemyBehavior != null)
-        {
-            EnemyManager.Instance.OnEnemyDeath(transform.position);
-        }
-        if(anim != null)
+        EnemyManager.Instance.OnEnemyDeath(transform.position);
+        DropSouls();
+        if (anim != null)
         {
             anim.SetTrigger("death");
             StartCoroutine(DestroyAfter(deathDelay));
@@ -53,8 +59,6 @@ public class HasHealth : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        DropSouls();
 
     }
 

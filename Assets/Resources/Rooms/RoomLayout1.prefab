@@ -123,8 +123,20 @@ PrefabInstance:
       value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 3125090873751017474, guid: e85ea835115b24c8fa04678e5b9a91cf, type: 3}
+      propertyPath: angleDelta
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 3125090873751017474, guid: e85ea835115b24c8fa04678e5b9a91cf, type: 3}
+      propertyPath: attackTime
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3125090873751017474, guid: e85ea835115b24c8fa04678e5b9a91cf, type: 3}
       propertyPath: acceleration
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3125090873751017474, guid: e85ea835115b24c8fa04678e5b9a91cf, type: 3}
+      propertyPath: projectileSpeed
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e85ea835115b24c8fa04678e5b9a91cf, type: 3}
@@ -154,7 +166,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1964538019127008014, guid: e85ea835115b24c8fa04678e5b9a91cf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.061698988
+      value: -2.75
       objectReference: {fileID: 0}
     - target: {fileID: 1964538019127008014, guid: e85ea835115b24c8fa04678e5b9a91cf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -205,8 +217,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3125090873751017474, guid: e85ea835115b24c8fa04678e5b9a91cf, type: 3}
+      propertyPath: angleDelta
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 3125090873751017474, guid: e85ea835115b24c8fa04678e5b9a91cf, type: 3}
+      propertyPath: attackTime
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3125090873751017474, guid: e85ea835115b24c8fa04678e5b9a91cf, type: 3}
       propertyPath: acceleration
       value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3125090873751017474, guid: e85ea835115b24c8fa04678e5b9a91cf, type: 3}
+      propertyPath: projectileSpeed
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e85ea835115b24c8fa04678e5b9a91cf, type: 3}
